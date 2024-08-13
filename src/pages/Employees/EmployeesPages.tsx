@@ -6,15 +6,19 @@ import { DetailEmployee } from "../../types/employee";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { formatDate } from "../../types/FormatDates";
 import Loaders from "../../components/Loaders";
+import { fetchBranches } from "../../store/Reducers/BranchSlice";
+import { fetchPositions } from "../../store/Reducers/PositionSlice";
 
 
 const EmployeesPages = () => {
     const dispatch = useAppDispatch();
-    const { detailEmployees, loading, error } = useAppSelector((state) => state.detailEmployee);
+    const { detailEmployees, loading } = useAppSelector((state) => state.detailEmployee);
     const [dueDate, setDueDate] = useState<number | undefined>(undefined);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null);
     const navigate = useNavigate();
+    const { positions } = useAppSelector((state) => state.position);
+    const { branches } = useAppSelector((state) => state.branch);
 
     const goToDetails = (detailEmployeeId? : number) => {
       navigate('/employee-details', { state: { detailEmployeeId } });
@@ -48,7 +52,7 @@ const EmployeesPages = () => {
 
     useEffect(() => {
         dispatch(getAllDetailEmployees({ daysUntilContractEnds: dueDate }));
-      }, [dispatch, dueDate]);
+      }, [dispatch, dueDate, branches, positions]);
 
       if (loading) return <Loaders/>;
 
